@@ -1,10 +1,11 @@
-package com.authentication.client.core.application.service
+package com.authentication.client
 
 import com.authentication.client.adapters.outbound.CustomerRepositoryAdapter
 import com.authentication.client.adapters.outbound.JwtServiceAdapter
+import com.authentication.client.core.application.service.AuthenticationService
 import com.authentication.client.core.domain.model.Customer
-import com.authentication.client.ports.inbound.AuthenticationUseCase
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -44,16 +45,21 @@ class AuthenticationServiceTest {
     fun `register should save customer`() {
         // Arrange
         val customer = Customer("user", "pass", "123456789")
+        val encodedPassword = "encodedPass"
+        val customerWithEncodedPassword = customer.copy(password = encodedPassword)
+
+        // Configuração dos mocks
         `when`(customerRepository.existsByUsername(customer.username)).thenReturn(false)
-        `when`(passwordEncoder.encode(customer.password)).thenReturn("encodedPass")
-        `when`(customerRepository.save(any(Customer::class.java))).thenReturn(customer)
+        `when`(passwordEncoder.encode(customer.password)).thenReturn(encodedPassword)
+        `when`(customerRepository.save(customerWithEncodedPassword)).thenReturn(customerWithEncodedPassword)
 
         // Act
         val result = authenticationService.register(customer)
 
         // Assert
-        assertEquals(customer, result)
+        assertEquals(customerWithEncodedPassword, result) // Verifica se o resultado é o esperado
         verify(customerRepository, times(1)).existsByUsername(customer.username)
-        verify(customerRepository, times(1)).save(any(Customer::class.java))
+        verify(passwordEncoder, times(1)).encode(customer.password)
+        verify(customerRepository, times(1)).save(customerWithEncodedPassword)
     }
 }
