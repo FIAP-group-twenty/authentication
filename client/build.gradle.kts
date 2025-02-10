@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.2"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
+    i	id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "com.authentication"
@@ -40,6 +41,18 @@ kotlin {
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
 	}
+}
+
+sonarqube {
+    properties {
+        property ("sonar.projectKey", "group-twenty_notification-service")
+        property ("sonar.organization", "group-twenty")
+        property ("sonar.host.url", project.findProperty("SONAR_HOST_URL") ?: "")
+        property("sonar.login", project.findProperty("SONAR_TOKEN") ?: "")
+        property("sonar.kotlin.language.level", "1.9")
+        property("sonar.sources", "src/main/kotlin")
+        property("sonar.tests", "src/test/kotlin")
+    }
 }
 
 allOpen {
