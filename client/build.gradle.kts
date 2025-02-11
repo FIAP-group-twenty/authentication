@@ -45,7 +45,7 @@ kotlin {
 
 sonarqube {
     properties {
-        property ("sonar.projectKey", "group-twenty_notification-service")
+        property ("sonar.projectKey", "group-twenty_authentication")
         property ("sonar.organization", "group-twenty")
         property ("sonar.host.url", project.findProperty("SONAR_HOST_URL") ?: "")
         property("sonar.login", project.findProperty("SONAR_TOKEN") ?: "")
